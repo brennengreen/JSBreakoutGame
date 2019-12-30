@@ -5,10 +5,12 @@
     <title>Gamedev Canvas Workshop</title>
     <style>
         * {background:#0e0e0e;padding:0;margin:0;}
-        canvas {background: #141414;;display:block;margin:auto;stroke: #1a1a1a;}
+        canvas {background: #141414;;display:block;margin:15vh auto;stroke: #1a1a1a;}
+        h1 {color: #eeeeee;display:block;margin:auto;}
     </style>
 </head>
 <body>
+    <h1> B R E A K O U T </h1>
     <canvas id="gameFrame" width="960" height="640"></canvas>
 
     <script>
@@ -31,8 +33,41 @@
 
         // Controller
         var rightPressed = false;
-        var leftPressed = true;
+        var leftPressed = false;
 
+        // Brick Configurations
+        var brickRowCount = 6;
+        var brickColumnCount = 10;
+        var brickWidth = 80;
+        var brickHeight = 30;
+        var brickPadding = 10;
+        var brickOffsetTop = 30;
+        var brickOffsetLeft = 30;
+        var bricks = [];
+
+        // Brick Initialization
+        for (var c = 0; c < brickColumnCount; c++) {
+            bricks[c] = [];
+            for (var r = 0; r<brickRowCount; r++) {
+                bricks[c][r] = {x: 0, y: 0};
+            }
+        }
+
+        function drawBricks() {
+            for (var c = 0; c < brickColumnCount; c++) {
+                for (var r = 0; r<brickRowCount; r++) {
+                    var brickX = (c*(brickWidth + brickPadding)) + brickOffsetLeft;
+                    var brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop;
+                    bricks[c][r].x = brickX;
+                    bricks[c][r].y = brickY;
+                    ctx.beginPath();
+                    ctx.rect(brickX,brickY,brickWidth,brickHeight);
+                    ctx.fillStyle = "#eee";
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+        }
 
         function drawPaddle() {
             ctx.beginPath();
@@ -52,12 +87,22 @@
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (y + dy < ballRadius || y + dy > canvas.height-ballRadius) {
-                dy = -dy;
-            }
-            if (x + dx < ballRadius || x + dx > canvas.width-ballRadius) {
+            if (x + dx < ballRadius || x + dx > (canvas.width-ballRadius) ) {
                 dx = -dx;
             }
+            if (y + dy < ballRadius) {
+                dy = -dy;
+            } else if ( y + dy > canvas.height-ballRadius) {
+                // Check if the ball is within the paddle, if it is then invert dy
+                if (x + dx > paddleX && x + dx < (paddleX + paddleWidth) ) {
+                    dy = -dy;
+                } else {
+                    alert("GAME OVER");
+                    document.location.reload();
+                    clearInterval(interval);
+                }
+            }
+            drawBricks();
             drawBall();
             x += dx;
             y += dy;
@@ -95,7 +140,7 @@
                 leftPressed = false;
             }
         }
-        setInterval(draw, 10);
+        var interval = setInterval(draw, 10);
     </script>
 
 </body>
