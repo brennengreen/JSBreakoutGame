@@ -5,13 +5,14 @@
     <title>Gamedev Canvas Workshop</title>
     <style>
         * {background:#0e0e0e;padding:0;margin:0;}
-        canvas {background: #141414;;display:block;margin:15vh auto;stroke: #1a1a1a;}
-        h1 {color: #eeeeee;display:block;margin:auto;}
+        canvas {background:#141414;;display:block;margin-left:auto;margin-right:auto;margin-top:0;stroke: #1a1a1a;}
+        h1 {letter-spacing:.5vw;font-size:3em;color:#eeeeee;display:block;margin:5vh 40vw;}
     </style>
 </head>
 <body>
-    <h1> B R E A K O U T </h1>
+    <h1> BREAKOUT </h1>
     <canvas id="gameFrame" width="960" height="640"></canvas>
+    <a href="#">Back</a>
 
     <script>
         // Canvas Settings
@@ -22,8 +23,8 @@
         var ballRadius = 25;
         var x = canvas.width/2;
         var y = canvas.height-30;
-        var dx = 6;
-        var dy = -2;
+        var dx = 2;
+        var dy = 2;
         
         // Paddle Settings
         var paddleHeight = 15;
@@ -37,19 +38,21 @@
 
         // Brick Configurations
         var brickRowCount = 6;
-        var brickColumnCount = 10;
-        var brickWidth = 80;
+        var brickColumnCount = 8;
+        var brickWidth = 100;
         var brickHeight = 30;
         var brickPadding = 10;
         var brickOffsetTop = 30;
-        var brickOffsetLeft = 30;
+        var brickOffsetLeft = 45;
         var bricks = [];
+        var brickColor = ["#C0392B", "#9B59B6", "#3498DB", "#1ABC9C", "#2ECC71", "#F1C40F"];
+        var numColors = brickColor.length;
 
         // Brick Initialization
         for (var c = 0; c < brickColumnCount; c++) {
             bricks[c] = [];
             for (var r = 0; r<brickRowCount; r++) {
-                bricks[c][r] = {x: 0, y: 0, status: 1};
+                bricks[c][r] = {x: 0, y: 0, status: 1, color: brickColor[Math.floor(Math.random() * numColors)]};
             }
         }
 
@@ -63,7 +66,7 @@
                         bricks[c][r].y = brickY;
                         ctx.beginPath();
                         ctx.rect(brickX,brickY,brickWidth,brickHeight);
-                        ctx.fillStyle = "#eee";
+                        ctx.fillStyle = bricks[c][r].color;
                         ctx.fill();
                         ctx.closePath();
                     }
